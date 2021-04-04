@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+from mappings import mapping as mp
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -33,7 +34,7 @@ class MainWindow(QWidget):
     def getfile(self):
         file_name = QFileDialog.getOpenFileName(self, 'Open file', 'D:/compressed-path-database/resources',"Image files (*.jpg *.png)")
         if ("open_file" in self.actions):
-            self.actions.get("open_file")(file_name)
+            self.actions.get("open_file")(file_name[0])
 
     def addMenuBar(self):
         self.menu_bar = QMenuBar()
@@ -47,7 +48,9 @@ class MainWindow(QWidget):
         self.tableWidget.itemChanged.connect(self.cellModify)
     
     def cellModify(self, item):
-        print(item.row(), item.column(), item.text())
+        self.data[item.row()][item.column()] = item.text()
+        for image in self.images:
+            image.update(self.data)
 
     def printMatrix(self):
         image = ImageWindow(self.data)
@@ -74,21 +77,20 @@ class ImageWindow(QWidget):
         self.resize(400, 400)
         #self.showMaximized()
                 
-
-
         self.colors = {}
-        self.colors["0"] = QColor(255, 255, 255, 255).rgb()
-        self.colors["1"] = QColor(0, 0, 0, 0).rgb()
+        for index, row in mp.iterrows():
+            self.colors[str(row['id'])] = QColor(row['color'][0], row['color'][1], row['color'][2], 0).rgb()
         
-
         self.label = QLabel()
+        self.grid = QGridLayout()
+        self.grid.addWidget(self.label, 1, 1)
+        self.setLayout(self.grid)
 
+        self.update(matrix)
+
+    def update(self, matrix):
         self.matrix = matrix
         self.print()
-
-        self.grid = QGridLayout()
-        self.grid.addWidget(self.label,1,1)
-        self.setLayout(self.grid)
 
     def print(self): 
         image = QImage(self.matrix.shape[1],self.matrix.shape[0], QImage.Format_RGB888)
