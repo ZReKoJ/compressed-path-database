@@ -43,31 +43,9 @@ class Node():
 
         self.index = 0
 
-    def addParent(self, parent):
-        if parent is not None:
-            self.index = parent.index + 1
-            self.parentNode = parent
-            self.parentNode.addChild(self)
-            self.g = self.coord.distanceTo(self.parentNode.coord) + self.parentNode.g
-        else:
-            self.index = 0
-            self.g = 0
-        return self
-
-    def removeParent(self):
-        if self.parentNode is not None:
-            self.parentNode.removeChild(self)
-            self.parentNode = None
-            self.g = 0
-        return self
-
-    def addChild(self, child):
-        self.childrenNodes.append(child)
-
-    def removeChild(self, child):
         
 
-class AStar():
+class Algorithm():
     def __init__(self, matrix):
         self.matrix = matrix
         print("hello")

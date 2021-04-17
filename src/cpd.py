@@ -19,5 +19,6 @@ if __name__ == "__main__":
     window.addCallback("open_file", openFileFunction)
 
     openFileFunction('D:/compressed-path-database/resources/labyrinth_2.png')
+    window.calculate(matrix)
 
     gui.start()

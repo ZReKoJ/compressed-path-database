@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from mappings import mapping as mp
 import os
+from algorithm import Algorithm
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -48,6 +49,11 @@ class MainWindow(QWidget):
         menu_file.addAction("Open", self.getfile)
         menu_print = self.menu_bar.addMenu("Print")
         menu_print.addAction("Matrix", lambda : self.printMatrix(self.data["stream"]))
+        menu_calculate = self.menu_bar.addMenu("Calculate")
+        menu_calculate.addAction("Calc", lambda : self.calculate(self.data["stream"]))
+
+    def calculate(self, data): 
+        algorithm = Algorithm(data)
 
     def addTableWidget(self, matrix=None):
         self.tableWidget = QTableWidget()
