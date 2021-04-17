@@ -1,12 +1,17 @@
 import map_reader
 import gui
+import os
 
 window = None
 matrix = None
 
 def openFileFunction(filename):
+    basename = os.path.basename(os.path.normpath(filename))
     matrix = map_reader.imageToMatrix(filename, 300, 200)
-    window.initTableData(matrix)
+    window.initTableData({
+        "filename": basename,
+        "stream": matrix
+    })
 
 if __name__ == "__main__":
     window = gui.createWindow()

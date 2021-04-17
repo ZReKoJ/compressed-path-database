@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 from mappings import mapping as mp
+import os
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -14,17 +15,22 @@ class MainWindow(QWidget):
         self.resize(800, 400)
         #self.showMaximized()
 
-        layout = QVBoxLayout()
-        self.setLayout(layout)
+        mainLayout = QVBoxLayout()
+        self.setLayout(mainLayout)
+
+        secondaryLayout = QHBoxLayout()
         
         self.menu_bar = None
         self.tableWidget = None
 
         self.addMenuBar()
         self.addTableWidget()
+        self.addTreeView()
 
-        layout.addWidget(self.menu_bar)
-        layout.addWidget(self.tableWidget)
+        mainLayout.addWidget(self.menu_bar)
+        mainLayout.addLayout(secondaryLayout)
+        secondaryLayout.addWidget(self.tableWidget)
+        secondaryLayout.addWidget(self.treeView)
 
         self.actions = {}
         self.data = None
@@ -41,28 +47,36 @@ class MainWindow(QWidget):
         menu_file = self.menu_bar.addMenu("File")
         menu_file.addAction("Open", self.getfile)
         menu_print = self.menu_bar.addMenu("Print")
-        menu_print.addAction("Matrix", self.printMatrix)
+        menu_print.addAction("Matrix", lambda : self.printMatrix(self.data["stream"]))
 
     def addTableWidget(self, matrix=None):
         self.tableWidget = QTableWidget()
         self.tableWidget.itemChanged.connect(self.cellModify)
     
+    def addTreeView(self):
+        view = QTreeView()
+        model = QFileSystemModel()
+        model.index(QDir.currentPath())
+        view.setModel(model)
+        view.setColumnWidth(0, 200)
+        self.treeView = view
+
     def cellModify(self, item):
-        self.data[item.row()][item.column()] = item.text()
+        self.data["stream"][item.row()][item.column()] = item.text()
         for image in self.images:
             image.update(self.data)
 
-    def printMatrix(self):
-        image = ImageWindow(self.data)
+    def printMatrix(self, data):
+        image = ImageWindow(data)
         self.images.append(image)
         image.show()
 
     def initTableData(self, data):
         self.data = data
         self.tableWidget.itemChanged.disconnect()
-        self.tableWidget.setRowCount(self.data.shape[0])
-        self.tableWidget.setColumnCount(self.data.shape[1])
-        for index, x in np.ndenumerate(self.data):
+        self.tableWidget.setRowCount(self.data["stream"].shape[0])
+        self.tableWidget.setColumnCount(self.data["stream"].shape[1])
+        for index, x in np.ndenumerate(self.data["stream"]):
             self.tableWidget.setItem(index[0], index[1], QTableWidgetItem(str(x)))
         self.tableWidget.itemChanged.connect(self.cellModify)
 
