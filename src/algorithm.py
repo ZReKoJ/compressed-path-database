@@ -48,9 +48,14 @@ class Node():
 class Algorithm():
     def __init__(self, matrix):
         self.matrix = matrix
-        print("hello")
-        coord = Coordinate(1, 2)
-        print(coord.i)
+        
+        self.printMatrix(self.matrix)
+
+    def printMatrix(self, matrix):
+        print(matrix)
+        for i in matrix:
+            for j in matrix:
+                print(matrix[i][j])
 
     def run(self, fromNode, toNode):
         print("da")

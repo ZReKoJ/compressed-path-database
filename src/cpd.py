@@ -3,15 +3,16 @@ import gui
 import os
 
 window = None
-matrix = None
+data = None
 
 def openFileFunction(filename):
     basename = os.path.basename(os.path.normpath(filename))
     matrix = map_reader.imageToMatrix(filename, 300, 200)
-    window.initTableData({
+    data = {
         "filename": basename,
         "stream": matrix
-    })
+    }
+    window.initTableData(data)
 
 if __name__ == "__main__":
     window = gui.createWindow()
@@ -19,6 +20,6 @@ if __name__ == "__main__":
     window.addCallback("open_file", openFileFunction)
 
     openFileFunction('D:/compressed-path-database/resources/labyrinth_2.png')
-    window.calculate(matrix)
+    window.calculate(data["stream"])
 
     gui.start()
